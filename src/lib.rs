@@ -14,7 +14,7 @@ impl Default for PortRange {
 }
 
 pub fn get_port_in_range(range: PortRange) -> Option<u16> {
-    return (range.min..(range.max+1)).filter(|p| check_port_available(&p)).nth(0); 
+    return (range.min..=(range.max)).filter(|p| check_port_available(&p)).nth(0); 
 }
 
 
@@ -30,6 +30,14 @@ pub fn get_port_prefer(ports: Vec<u16>) -> Option<u16> {
     } else {
        return get_port();
     }
+}
+
+pub fn get_port_except(ports: Vec<u16>) -> Option<u16> {
+    return (PortRange::default().min..=PortRange::default().max).filter(|p| !ports.contains(p) && check_port_available(p)).nth(0);
+}
+
+pub fn get_port_in_range_except(range: PortRange, ports: Vec<u16>) -> Option<u16> {
+    return (range.min..=range.max).filter(|p| !ports.contains(p) && check_port_available(p)).nth(0);
 }
 
 fn check_port_available(port: &u16) -> bool {
